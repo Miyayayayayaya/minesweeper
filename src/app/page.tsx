@@ -35,29 +35,47 @@ import styles from './page.module.css';
 // console.log(sum2(4, 10));
 
 // console.log(sum1(10));
+const directions = [
+  [-1, 0],
+  [-1, 1],
+  [0, 1],
+  [1, 1],
+  [1, 0],
+  [1, -1],
+  [0, -1],
+  [-1, -1],
+];
 
-const randomBombPosition = () => {
+const randomBombPosition = (x: number, y: number) => {
   const positions = new Set<string>();
   const line: [number, number][] = [];
   const getRandomBomb = (min: number, max: number): number => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
+  positions.add(`${y},${x}`);
+  for (const [dy, dx] of directions) {
+    positions.add(`${y + dy},${x + dx}`);
+  }
+  console.log(positions);
 
-  for (let i = 0; i < 9; i++) {
+  while (line.length < 10) {
     const x_bombPosition = getRandomBomb(0, 8);
     const y_bombPosition = getRandomBomb(0, 8);
-    const key = `${x_bombPosition},${y_bombPosition}`;
+    const key = `${y_bombPosition},${x_bombPosition}`;
+
     if (!positions.has(key)) {
       positions.add(key);
-      line.push([x_bombPosition, y_bombPosition]);
+      line.push([y_bombPosition, x_bombPosition]);
     }
   }
   return line;
 };
 
+let Maked = true;
+
 export default function Home() {
   const [sampleCounter, setSampleCounter] = useState(0);
-  // const [numbers, setNumbers] = useState([0, 0, 0, 0, 0]);
+  const [numbers, setNumbers] = useState([0, 0, 0, 0, 0]);
   const [userInputs, setUserInput] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -82,11 +100,35 @@ export default function Home() {
   ]);
 
   const clickHandler = (x: number, y: number) => {
-    const newBombMap = structuredClone(bombMap);
-    const bomb = randomBombPosition();
-    console.log(bomb);
-
-    console.log(x, y);
+    if (Maked) {
+      const newBombMap = structuredClone(bombMap);
+      const bomb = randomBombPosition(x, y);
+      for (const [ky, kx] of bomb) {
+        newBombMap[ky][kx] = 10;
+      }
+      console.log(bomb);
+      console.log(x, y);
+      for (const [ny, nx] of directions) {
+        console.log(y + ny, x + nx);
+      }
+      Maked = false;
+      for (let y = 0; y < 9; y++) {
+        for (let x = 0; x < 9; x++) {
+          if (newBombMap[y][x] === 0) {
+            let bombCheck = 0;
+            for (const [dy, dx] of directions) {
+              const ny = y + dy;
+              const nx = x + dx;
+              if (ny >= 0 && ny < 9 && nx >= 0 && nx < 9 && newBombMap[ny][nx] === 10) {
+                bombCheck++;
+              }
+            }
+            newBombMap[y][x] = bombCheck;
+          }
+        }
+      }
+      setBombMap(newBombMap);
+    }
   };
 
   // const clickHandler = () => {
@@ -118,7 +160,9 @@ export default function Home() {
               key={`${x}-${y}`}
               onClick={() => clickHandler(x, y)}
               style={{ backgroundPosition: `${-30 * sampleCounter}px` }}
-            />
+            >
+              {bombMap[y][x]}
+            </div>
           )),
         )}
       </div>
