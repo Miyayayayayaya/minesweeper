@@ -16,7 +16,7 @@
   border: 1px solid #000;
 }
 
-.board {
+.inputBoard {
   width: 270px;
   height: 270px;
   background-color: rgb(172 176 176);
@@ -26,4 +26,11 @@
   float: left;
   width: 30px;
   height: 30px;
+}
+
+.boardCell {
+  float: left;
+  width: 30px;
+  height: 30px;
+  background: url('~/src/assets/images/minesweeperCell.png') no-repeat;
 }

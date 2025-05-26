@@ -152,7 +152,7 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.board}>
+      <div className={styles.inputBoard}>
         {userInputs.map((row, y) =>
           row.map((color, x) => (
             <div
@@ -161,7 +161,7 @@ export default function Home() {
               onClick={() => clickHandler(x, y)}
               style={{ backgroundPosition: `${-30 * sampleCounter}px` }}
             >
-              {bombMap[y][x]}
+              <div className={styles.boardCell}>{bombMap[y][x]}</div>
             </div>
           )),
         )}
