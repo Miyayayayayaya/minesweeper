@@ -98,13 +98,24 @@ export default function Home() {
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
+  const [board, setBoard] = useState([
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ]);
 
   const clickHandler = (x: number, y: number) => {
     if (Maked) {
       const newBombMap = structuredClone(bombMap);
       const bomb = randomBombPosition(x, y);
       for (const [ky, kx] of bomb) {
-        newBombMap[ky][kx] = 10;
+        newBombMap[ky][kx] = 11;
       }
       console.log(bomb);
       console.log(x, y);
@@ -119,7 +130,7 @@ export default function Home() {
             for (const [dy, dx] of directions) {
               const ny = y + dy;
               const nx = x + dx;
-              if (ny >= 0 && ny < 9 && nx >= 0 && nx < 9 && newBombMap[ny][nx] === 10) {
+              if (ny >= 0 && ny < 9 && nx >= 0 && nx < 9 && newBombMap[ny][nx] === 11) {
                 bombCheck++;
               }
             }
@@ -129,6 +140,17 @@ export default function Home() {
       }
       setBombMap(newBombMap);
     }
+
+    board[y][x];
+  };
+  const handleRightClick = (e: React.MouseEvent, x: number, y: number) => {
+    e.preventDefault();
+    console.log('右クリックされた座標:', x, y);
+    const newUserInputs = structuredClone(userInputs);
+    userInputs[y][x]++;
+    console.log('クリック数:', userInputs[y][x]);
+    newUserInputs[y][x] = userInputs[y][x] % 2;
+    setUserInput(newUserInputs);
   };
 
   // const clickHandler = () => {
@@ -159,9 +181,19 @@ export default function Home() {
               className={styles.samplecell}
               key={`${x}-${y}`}
               onClick={() => clickHandler(x, y)}
-              style={{ backgroundPosition: `${-30 * sampleCounter}px` }}
+              onContextMenu={(e) => handleRightClick(e, x, y)}
+              style={{ backgroundPosition: `${-30 * (bombMap[y][x] - 1)}px` }}
             >
-              <div className={styles.boardCell}>{bombMap[y][x]}</div>
+              <div className={styles.boardCell}>
+                <div
+                  className={styles.userInputsCell}
+                  style={{
+                    backgroundPosition: userInputs[y][x] === 1 ? `-270px` : undefined,
+                  }}
+                >
+                  {bombMap[y][x]}
+                </div>
+              </div>
             </div>
           )),
         )}

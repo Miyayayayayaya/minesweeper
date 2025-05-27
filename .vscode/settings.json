@@ -20,5 +20,5 @@
   "explorer.fileNesting.patterns": {
     "*.module.css": "${capture}.module.css.d.ts, ${capture}.module.css.d.ts.map"
   },
-  "cSpell.words": ["samplecell"]
+  "cSpell.words": ["Maked", "samplecell"]
 }

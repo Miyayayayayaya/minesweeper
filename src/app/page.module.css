@@ -34,3 +34,10 @@
   height: 30px;
   background: url('~/src/assets/images/minesweeperCell.png') no-repeat;
 }
+
+.userInputsCell {
+  float: left;
+  width: 30px;
+  height: 30px;
+  background: url('~/src/assets/images/image.png') no-repeat;
+}
