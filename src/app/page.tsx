@@ -149,7 +149,7 @@ export default function Home() {
     const newUserInputs = structuredClone(userInputs);
     userInputs[y][x]++;
     console.log('クリック数:', userInputs[y][x]);
-    newUserInputs[y][x] = userInputs[y][x] % 2;
+    newUserInputs[y][x] = userInputs[y][x] % 3;
     setUserInput(newUserInputs);
   };
 
@@ -188,7 +188,12 @@ export default function Home() {
                 <div
                   className={styles.userInputsCell}
                   style={{
-                    backgroundPosition: userInputs[y][x] === 1 ? `-270px` : undefined,
+                    backgroundPosition:
+                      userInputs[y][x] === 1
+                        ? `-270px`
+                        : userInputs[y][x] === 2
+                          ? `-240px`
+                          : undefined,
                   }}
                 >
                   {bombMap[y][x]}
