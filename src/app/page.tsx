@@ -153,25 +153,6 @@ export default function Home() {
     setUserInput(newUserInputs);
   };
 
-  // const clickHandler = () => {
-  //   setSampleCounter((sampleCounter + 1) % 14); //余り
-  //   console.log(sampleCounter);
-
-  //   const newNumbers = structuredClone(numbers);
-  //   newNumbers[sampleCounter % 5] += 1;
-  //   setNumbers(newNumbers);
-  //   console.log(numbers);
-  //   const calculateTotal = (arr: number[], counter: number) => {
-  //     let total = 0;
-  //     for (let i = 0; i < 5; i++) {
-  //       total += arr[i];
-  //     }
-  //     return total + counter;
-  //   };
-  //   const total = calculateTotal(numbers, sampleCounter);
-  //   console.log(total);
-  // };
-
   return (
     <div className={styles.container}>
       <div className={styles.inputBoard}>
