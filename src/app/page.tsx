@@ -63,6 +63,15 @@ const repeatOpen = (
     }
   }
 };
+const resetButton = (userInputs: number[][], bombMap: number[][], board: number[][]) => {
+  for (let y = 0; y < 9; y++) {
+    for (let x = 0; x < 9; x++) {
+      userInputs[y][x] = 0;
+      bombMap[y][x] = 0;
+      board[y][x] = 0;
+    }
+  }
+};
 
 export default function Home() {
   const [userInputs, setUserInput] = useState([
@@ -169,6 +178,15 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <div className={styles.motherBoard}>
+        <div className={styles.boardCell2}>
+          <div
+            className={styles.smileCell}
+            onClick={() => resetButton}
+            style={{
+              backgroundPosition: `-520px`,
+            }}
+          />
+        </div>
         <div className={styles.inputBoard}>
           {board.map((row, y) =>
             row.map((color, x) => (

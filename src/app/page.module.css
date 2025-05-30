@@ -49,3 +49,20 @@
   padding-left: 16px;
   background: url('~/src/assets/images/MotherBoard.png') no-repeat;
 }
+
+.boardCell2 {
+  width: 47px;
+  height: 47.5px;
+  margin-top: -73px;
+  margin-bottom: 27px;
+  margin-left: 112px;
+  background: url('~/src/assets/images/minesweeperCell.png') no-repeat;
+  background-size: cover;
+}
+
+.smileCell {
+  width: 47px;
+  height: 47.5px;
+  background: url('~/src/assets/images/image.png') no-repeat;
+  background-size: cover;
+}
