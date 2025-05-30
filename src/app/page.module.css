@@ -41,3 +41,11 @@
   height: 30px;
   background: url('~/src/assets/images/image.png') no-repeat;
 }
+
+.motherBoard {
+  width: 300px;
+  height: 500px;
+  padding-top: 95px;
+  padding-left: 16px;
+  background: url('~/src/assets/images/MotherBoard.png') no-repeat;
+}

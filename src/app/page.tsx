@@ -168,39 +168,39 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.inputBoard}>
-        {board.map((row, y) =>
-          row.map((color, x) => (
-            <div
-              className={styles.samplecell}
-              key={`${x}-${y}`}
-              onClick={() => clickHandler(x, y)}
-              onContextMenu={(e) => handleRightClick(e, x, y)}
-              style={{ backgroundPosition: `${-30 * (bombMap[y][x] - 1)}px` }}
-            >
+      <div className={styles.motherBoard}>
+        <div className={styles.inputBoard}>
+          {board.map((row, y) =>
+            row.map((color, x) => (
               <div
-                className={styles.boardCell}
-                style={{
-                  backgroundPosition: userInputs[y][x] === 3 ? `-30px` : undefined,
-                }}
+                className={styles.samplecell}
+                key={`${x}-${y}`}
+                onClick={() => clickHandler(x, y)}
+                onContextMenu={(e) => handleRightClick(e, x, y)}
+                style={{ backgroundPosition: `${-30 * (bombMap[y][x] - 1)}px` }}
               >
                 <div
-                  className={styles.userInputsCell}
+                  className={styles.boardCell}
                   style={{
-                    backgroundPosition:
-                      userInputs[y][x] === 1
-                        ? `-270px`
-                        : userInputs[y][x] === 2
-                          ? `-240px`
-                          : `30px`,
+                    backgroundPosition: userInputs[y][x] === 3 ? `-30px` : undefined,
                   }}
                 >
-                  {bombMap[y][x]}
+                  <div
+                    className={styles.userInputsCell}
+                    style={{
+                      backgroundPosition:
+                        userInputs[y][x] === 1
+                          ? `-270px`
+                          : userInputs[y][x] === 2
+                            ? `-240px`
+                            : `30px`,
+                    }}
+                  />
                 </div>
               </div>
-            </div>
-          )),
-        )}
+            )),
+          )}
+        </div>
       </div>
     </div>
   );
