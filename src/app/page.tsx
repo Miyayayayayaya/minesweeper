@@ -147,21 +147,25 @@ export default function Home() {
     userInputs[y][x]++;
     newUserInputs[y][x] = userInputs[y][x] % 3;
     setUserInput(newUserInputs);
-  };
-  let CorrectFrug = 0;
-  const frugCounts = userInputs.flat().filter((i) => i === 1).length;
-  if (frugCounts === 10) {
-    for (const [ky, kx] of userInputs) {
-      if (userInputs[ky][kx] === 1) {
-        if (bombMap[ky][kx] === 11) {
+    let CorrectFrug = 0;
+    const frugCounts = userInputs.flat().filter((i) => i === 1).length;
+    console.log('旗カウント', frugCounts);
+
+    for (let ky = 0; ky < 9; ky++) {
+      for (let kx = 0; kx < 9; kx++) {
+        console.log(ky, kx);
+        if (bombMap[ky][kx] === 11 && userInputs[ky][kx] === 1) {
+          console.log('位置', userInputs[ky][kx]);
           CorrectFrug++;
+          console.log('正解', CorrectFrug);
           if (CorrectFrug === 10) {
             alert('ゲームクリア');
           }
         }
       }
     }
-  }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.inputBoard}>
