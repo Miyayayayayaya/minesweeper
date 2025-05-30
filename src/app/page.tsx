@@ -36,20 +36,9 @@ const randomBombPosition = (x: number, y: number) => {
   }
   return line;
 };
-// let FirstMake = false;
+
 let Maked = true;
 
-// const openCheck = (x: number, y: number, board: number[][]) => {
-//   const openBoard: [number, number][] = []; //周りのセルを開けるため
-//   for (const [dy, dx] of directions) {
-//     const ny = y + dy;
-//     const nx = x + dx;
-//     if (board[ny] === undefined || board[ny][nx] === undefined || board[ny][nx] === 0) {
-//       openBoard.push([ny, nx]);
-//     }
-//   }
-//   return openBoard;
-// };
 const repeatOpen = (
   x: number,
   y: number,
@@ -113,7 +102,6 @@ export default function Home() {
   //左クリック動作
   const clickHandler = (x: number, y: number) => {
     const newUserInputs = structuredClone(userInputs);
-    // const newBoard = structuredClone(board);
 
     //ボムの周りの数字を生成
     if (Maked) {
@@ -144,17 +132,12 @@ export default function Home() {
       setUserInput(newUserInputs);
       setBombMap(newBombMap);
       setBoard(newBombMap);
-      console.log(board);
-      // FirstMake = true;
     }
-
-    repeatOpen(x, y, newUserInputs, board);
-    // const newBombMap = structuredClone(bombMap);
-    // if (FirstMake) {
-    //   repeatOpen(x, y, newUserInputs, bombMap);
-    // }
-
-    // setBoard(newBombMap);
+    if (userInputs[y][x] !== 1) {
+      newUserInputs[y][x] = 3;
+      repeatOpen(x, y, newUserInputs, board);
+      setUserInput(newUserInputs);
+    }
   };
 
   //右クリック動作
@@ -165,6 +148,20 @@ export default function Home() {
     newUserInputs[y][x] = userInputs[y][x] % 3;
     setUserInput(newUserInputs);
   };
+  let CorrectFrug = 0;
+  const frugCounts = userInputs.flat().filter((i) => i === 1).length;
+  if (frugCounts === 10) {
+    for (const [ky, kx] of userInputs) {
+      if (userInputs[ky][kx] === 1) {
+        if (bombMap[ky][kx] === 11) {
+          CorrectFrug++;
+          if (CorrectFrug === 10) {
+            alert('ゲームクリア');
+          }
+        }
+      }
+    }
+  }
   return (
     <div className={styles.container}>
       <div className={styles.inputBoard}>
