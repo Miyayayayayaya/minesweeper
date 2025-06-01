@@ -8,11 +8,18 @@
   padding: 0 0.5rem;
 }
 
+.bombExplosionCell {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #000;
+}
+
 .samplecell {
   float: left;
   width: 30px;
   height: 30px;
   background: url('~/src/assets/images/image.png') no-repeat;
+  background-color: rgb(172 176 176);
   border: 1px solid #000;
 }
 

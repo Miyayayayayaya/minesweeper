@@ -63,7 +63,7 @@ const repeatOpen = (
     }
   }
 };
-const resetButton = (userInputs: number[][], bombMap: number[][], board: number[][]) => {
+const resetFunction = (userInputs: number[][], bombMap: number[][], board: number[][]) => {
   for (let y = 0; y < 9; y++) {
     for (let x = 0; x < 9; x++) {
       userInputs[y][x] = 0;
@@ -71,6 +71,7 @@ const resetButton = (userInputs: number[][], bombMap: number[][], board: number[
       board[y][x] = 0;
     }
   }
+  return;
 };
 
 export default function Home() {
@@ -132,7 +133,6 @@ export default function Home() {
               }
             }
             newBombMap[y][x] = bombCheck;
-            console.log('aaaa', newBombMap);
           }
         }
       }
@@ -147,26 +147,31 @@ export default function Home() {
       repeatOpen(x, y, newUserInputs, board);
       setUserInput(newUserInputs);
     }
+    // if (bombMap[y][x] === 11) {
+    //   bombMap[y][x] = 2;
+    // }
+  };
+  const resetButton = (event: React.MouseEvent<HTMLButtonElement>) => {
+    resetFunction(userInputs, bombMap, board);
+    return event;
   };
 
   //右クリック動作
   const handleRightClick = (e: React.MouseEvent, x: number, y: number) => {
     e.preventDefault();
     const newUserInputs = structuredClone(userInputs);
-    userInputs[y][x]++;
-    newUserInputs[y][x] = userInputs[y][x] % 3;
-    setUserInput(newUserInputs);
+    if (userInputs[y][x] !== 3) {
+      userInputs[y][x]++;
+      newUserInputs[y][x] = userInputs[y][x] % 3;
+      setUserInput(newUserInputs);
+    }
+
     let CorrectFrug = 0;
-    const frugCounts = userInputs.flat().filter((i) => i === 1).length;
-    console.log('旗カウント', frugCounts);
 
     for (let ky = 0; ky < 9; ky++) {
       for (let kx = 0; kx < 9; kx++) {
-        console.log(ky, kx);
         if (bombMap[ky][kx] === 11 && userInputs[ky][kx] === 1) {
-          console.log('位置', userInputs[ky][kx]);
           CorrectFrug++;
-          console.log('正解', CorrectFrug);
           if (CorrectFrug === 10) {
             alert('ゲームクリア');
           }
@@ -195,7 +200,10 @@ export default function Home() {
                 key={`${x}-${y}`}
                 onClick={() => clickHandler(x, y)}
                 onContextMenu={(e) => handleRightClick(e, x, y)}
-                style={{ backgroundPosition: `${-30 * (bombMap[y][x] - 1)}px` }}
+                style={{
+                  backgroundPosition: `${-30 * (bombMap[y][x] - 1)}px`,
+                  backgroundColor: color === 11 ? `ff0000` : undefined,
+                }}
               >
                 <div
                   className={styles.boardCell}
