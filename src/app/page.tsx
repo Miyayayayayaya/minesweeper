@@ -37,7 +37,7 @@ const randomBombPosition = (x: number, y: number) => {
   return line;
 };
 
-let Maked = true;
+// let Maked = true;
 
 const repeatOpen = (
   x: number,
@@ -57,7 +57,6 @@ const repeatOpen = (
     if (ny >= 0 && ny < 9 && nx >= 0 && nx < 9) {
       openBoard[ny][nx] = 3;
     }
-
     if (ny >= 0 && ny < 9 && nx >= 0 && nx < 9) {
       repeatOpen(nx, ny, openBoard, bombMap, visited);
     }
@@ -68,7 +67,7 @@ const resetFunction = (userInputs: number[][], bombMap: number[][], board: numbe
     for (let x = 0; x < 9; x++) {
       userInputs[y][x] = 0;
       bombMap[y][x] = 0;
-      board[y][x] = 0;
+      // board[y][x] = 1;
     }
   }
   return;
@@ -112,15 +111,14 @@ export default function Home() {
   //左クリック動作
   const clickHandler = (x: number, y: number) => {
     const newUserInputs = structuredClone(userInputs);
-
+    const newBombMap = structuredClone(bombMap);
     //ボムの周りの数字を生成
-    if (Maked) {
-      const newBombMap = structuredClone(bombMap);
+    if (bombMap.flat().filter((i) => i === 0).length === 81) {
       const bomb = randomBombPosition(x, y);
       for (const [ky, kx] of bomb) {
         newBombMap[ky][kx] = 11;
       }
-      Maked = false;
+      // Maked = false;
       for (let y = 0; y < 9; y++) {
         for (let x = 0; x < 9; x++) {
           if (newBombMap[y][x] === 0) {
@@ -145,15 +143,28 @@ export default function Home() {
     if (userInputs[y][x] !== 1) {
       newUserInputs[y][x] = 3;
       repeatOpen(x, y, newUserInputs, board);
+      if (bombMap[y][x] === 11) {
+        alert('ゲームオーバー');
+        for (let ky = 0; ky < 9; ky++) {
+          for (let kx = 0; kx < 9; kx++) {
+            if (bombMap[ky][kx] === 11) {
+              newUserInputs[ky][kx] = 3;
+            }
+          }
+        }
+      }
       setUserInput(newUserInputs);
     }
-    // if (bombMap[y][x] === 11) {
-    //   bombMap[y][x] = 2;
-    // }
   };
-  const resetButton = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const resetButton = () => {
     resetFunction(userInputs, bombMap, board);
-    return event;
+    console.log('ユーザーインプット', userInputs);
+    console.log('ボムマップ', bombMap);
+    console.log('board', board);
+    setUserInput(userInputs);
+    setBombMap(bombMap);
+    // setBoard(bombMap);
+    return;
   };
 
   //右クリック動作
@@ -186,7 +197,7 @@ export default function Home() {
         <div className={styles.boardCell2}>
           <div
             className={styles.smileCell}
-            onClick={() => resetButton}
+            onClick={resetButton}
             style={{
               backgroundPosition: `-520px`,
             }}
