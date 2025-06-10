@@ -67,7 +67,7 @@ const resetFunction = (userInputs: number[][], bombMap: number[][], board: numbe
     for (let x = 0; x < 9; x++) {
       userInputs[y][x] = 0;
       bombMap[y][x] = 0;
-      // board[y][x] = 1;
+      board[y][x] = 1;
     }
   }
   return;
@@ -107,6 +107,20 @@ export default function Home() {
     [1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1],
   ]);
+
+  const resetButton = () => {
+    const newUserInputs = structuredClone(userInputs);
+    const newBombMap = structuredClone(bombMap);
+    const newBoard = structuredClone(board);
+    resetFunction(newUserInputs, newBombMap, newBoard);
+    console.log('ユーザーインプット', userInputs);
+    console.log('ボムマップ', bombMap);
+    console.log('board', board);
+    setUserInput(newUserInputs);
+    setBombMap(newBombMap);
+    setBoard(newBoard);
+    return;
+  };
 
   //左クリック動作
   const clickHandler = (x: number, y: number) => {
@@ -155,16 +169,6 @@ export default function Home() {
       }
       setUserInput(newUserInputs);
     }
-  };
-  const resetButton = () => {
-    resetFunction(userInputs, bombMap, board);
-    console.log('ユーザーインプット', userInputs);
-    console.log('ボムマップ', bombMap);
-    console.log('board', board);
-    setUserInput(userInputs);
-    setBombMap(bombMap);
-    // setBoard(bombMap);
-    return;
   };
 
   //右クリック動作
