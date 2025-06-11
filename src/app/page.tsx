@@ -107,15 +107,27 @@ export default function Home() {
   ]);
   //タイマー
   const [count, setCount] = useState(0);
+
   const intervalRef = useRef<number | null>(null);
+
   const startTimer = () => {
     if (intervalRef.current !== null) return;
     intervalRef.current = window.setInterval(() => {
       setCount((prev) => prev + 1);
     }, 1000);
+
+    console.log('start:', intervalRef);
+  };
+  const stopTimer = () => {
+    if (intervalRef.current === null) return;
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+    console.log('stop:', intervalRef);
   };
 
   const resetButton = () => {
+    stopTimer();
+    setCount(0);
     const newUserInputs = structuredClone(userInputs);
     const newBombMap = structuredClone(bombMap);
     const newBoard = structuredClone(board);
@@ -166,6 +178,8 @@ export default function Home() {
       repeatOpen(x, y, newUserInputs, board);
       if (bombMap[y][x] === 11) {
         alert('ゲームオーバー');
+        console.log('aaaaaaaa');
+
         for (let ky = 0; ky < 9; ky++) {
           for (let kx = 0; kx < 9; kx++) {
             if (bombMap[ky][kx] === 11) {
@@ -175,6 +189,7 @@ export default function Home() {
         }
       }
       setUserInput(newUserInputs);
+      stopTimer();
     }
   };
 
@@ -210,6 +225,11 @@ export default function Home() {
         <div className={styles.level3}>上級</div>
       </div>
       <div className={styles.motherBoard}>
+        <div className={styles.bombCountBoard}>
+          <div className={styles.bombCell1} />
+          <div className={styles.bombCell2} />
+          <div className={styles.bombCell3} />
+        </div>
         <div className={styles.timeBoard}>
           <div
             className={styles.timerCell1}
@@ -239,13 +259,16 @@ export default function Home() {
             }}
           />
         </div>
-        <div className={styles.inputBoard} onClick={startTimer}>
+        <div className={styles.inputBoard}>
           {board.map((row, y) =>
             row.map((color, x) => (
               <div
                 className={styles.samplecell}
                 key={`${x}-${y}`}
-                onClick={() => clickHandler(x, y)}
+                onClick={() => {
+                  clickHandler(x, y);
+                  startTimer();
+                }}
                 onContextMenu={(e) => handleRightClick(e, x, y)}
                 style={{
                   backgroundPosition: `${-30 * (bombMap[y][x] - 1)}px`,

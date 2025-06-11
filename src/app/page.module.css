@@ -117,19 +117,51 @@
 }
 
 .timerCell1 {
-  width: 23px;
+  width: 22px;
   height: 43px;
   background: url('~/src/assets/images/0123456789.png') no-repeat;
 }
 
 .timerCell2 {
-  width: 23px;
+  width: 22px;
   height: 43px;
   background: url('~/src/assets/images/0123456789.png') no-repeat;
 }
 
 .timerCell3 {
-  width: 23px;
+  width: 22px;
+  height: 43px;
+  background: url('~/src/assets/images/0123456789.png') no-repeat;
+}
+
+.bombCountBoard {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  justify-content: space-around;
+  width: 84px;
+  height: 47.5px;
+  margin-top: -73px;
+  margin-bottom: 26px;
+  margin-left: 7px;
+  background-color: #000;
+}
+
+.bombCell1 {
+  width: 22px;
+  height: 43px;
+  background: url('~/src/assets/images/0123456789.png') no-repeat;
+}
+
+.bombCell2 {
+  width: 22px;
+  height: 43px;
+  background: url('~/src/assets/images/0123456789.png') no-repeat;
+}
+
+.bombCell3 {
+  width: 22px;
   height: 43px;
   background: url('~/src/assets/images/0123456789.png') no-repeat;
 }
