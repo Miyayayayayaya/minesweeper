@@ -61,7 +61,7 @@
   width: 47px;
   height: 47.5px;
   margin-top: -73px;
-  margin-bottom: 27px;
+  margin-bottom: 26px;
   margin-left: 112px;
   background: url('~/src/assets/images/minesweeperCell.png') no-repeat;
   background-size: cover;
@@ -72,4 +72,64 @@
   height: 47.5px;
   background: url('~/src/assets/images/image.png') no-repeat;
   background-size: cover;
+}
+
+.timeBoard {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  justify-content: space-around;
+  width: 84px;
+  height: 47.5px;
+  margin-top: -73px;
+  margin-bottom: 26px;
+  margin-left: 180px;
+  background-color: #000;
+}
+
+.level1 {
+  width: 84px;
+  height: 47.5px;
+  background-color: #929292;
+}
+
+.level2 {
+  width: 84px;
+  height: 47.5px;
+  background-color: #929292;
+}
+
+.level3 {
+  width: 84px;
+  height: 47.5px;
+  background-color: #929292;
+}
+
+.levelBoard {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  width: 300px;
+  height: 47.5px;
+  margin-bottom: 20px;
+}
+
+.timerCell1 {
+  width: 23px;
+  height: 43px;
+  background: url('~/src/assets/images/0123456789.png') no-repeat;
+}
+
+.timerCell2 {
+  width: 23px;
+  height: 43px;
+  background: url('~/src/assets/images/0123456789.png') no-repeat;
+}
+
+.timerCell3 {
+  width: 23px;
+  height: 43px;
+  background: url('~/src/assets/images/0123456789.png') no-repeat;
 }

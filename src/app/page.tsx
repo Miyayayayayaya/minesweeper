@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from './page.module.css';
 
 const directions = [
@@ -36,8 +36,6 @@ const randomBombPosition = (x: number, y: number) => {
   }
   return line;
 };
-
-// let Maked = true;
 
 const repeatOpen = (
   x: number,
@@ -107,6 +105,15 @@ export default function Home() {
     [1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1],
   ]);
+  //タイマー
+  const [count, setCount] = useState(0);
+  const intervalRef = useRef<number | null>(null);
+  const startTimer = () => {
+    if (intervalRef.current !== null) return;
+    intervalRef.current = window.setInterval(() => {
+      setCount((prev) => prev + 1);
+    }, 1000);
+  };
 
   const resetButton = () => {
     const newUserInputs = structuredClone(userInputs);
@@ -126,13 +133,13 @@ export default function Home() {
   const clickHandler = (x: number, y: number) => {
     const newUserInputs = structuredClone(userInputs);
     const newBombMap = structuredClone(bombMap);
-    //ボムの周りの数字を生成
+
     if (bombMap.flat().filter((i) => i === 0).length === 81) {
+      //ボムの周りの数字を生成
       const bomb = randomBombPosition(x, y);
       for (const [ky, kx] of bomb) {
         newBombMap[ky][kx] = 11;
       }
-      // Maked = false;
       for (let y = 0; y < 9; y++) {
         for (let x = 0; x < 9; x++) {
           if (newBombMap[y][x] === 0) {
@@ -197,7 +204,32 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
+      <div className={styles.levelBoard}>
+        <div className={styles.level1}>初級</div>
+        <div className={styles.level2}>中級</div>
+        <div className={styles.level3}>上級</div>
+      </div>
       <div className={styles.motherBoard}>
+        <div className={styles.timeBoard}>
+          <div
+            className={styles.timerCell1}
+            style={{
+              backgroundPosition: `${-23 * Math.floor(count / 100)}px`,
+            }}
+          />
+          <div
+            className={styles.timerCell2}
+            style={{
+              backgroundPosition: `${-23 * Math.floor((count - Math.floor(count / 100) * 100) / 10)}px`,
+            }}
+          />
+          <div
+            className={styles.timerCell3}
+            style={{
+              backgroundPosition: `${-23 * (count - Math.floor(count / 10) * 10)}px`,
+            }}
+          />
+        </div>
         <div className={styles.boardCell2}>
           <div
             className={styles.smileCell}
@@ -207,7 +239,7 @@ export default function Home() {
             }}
           />
         </div>
-        <div className={styles.inputBoard}>
+        <div className={styles.inputBoard} onClick={startTimer}>
           {board.map((row, y) =>
             row.map((color, x) => (
               <div
