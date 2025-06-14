@@ -105,8 +105,8 @@ const resetFunction = (userInputs: number[][], bombMap: number[][], board: numbe
   return;
 };
 export default function Home() {
-  const [userInputs, setUserInput] = useState<number[][]>(levelSet2());
-  const [bombMap, setBombMap] = useState<number[][]>(levelSet2());
+  const [userInputs, setUserInput] = useState<number[][]>(levelSet1());
+  const [bombMap, setBombMap] = useState<number[][]>(levelSet1());
   const [board, setBoard] = useState<number[][]>(levelSetFunction_setBoard(width, length));
   //タイマー
   const [count, setCount] = useState(0);
@@ -269,80 +269,89 @@ export default function Home() {
           上級
         </div>
       </div>
-      <div className={styles.motherBoard}>
-        <div className={styles.bombCountBoard}>
-          <div className={styles.bombCell1} />
-          <div className={styles.bombCell2} />
-          <div className={styles.bombCell3} />
-        </div>
-        <div className={styles.timeBoard}>
-          <div
-            className={styles.timerCell1}
-            style={{
-              backgroundPosition: `${-22.8 * Math.floor(count / 100)}px`,
-            }}
-          />
-          <div
-            className={styles.timerCell2}
-            style={{
-              backgroundPosition: `${-22.8 * Math.floor((count - Math.floor(count / 100) * 100) / 10)}px`,
-            }}
-          />
-          <div
-            className={styles.timerCell3}
-            style={{
-              backgroundPosition: `${-22.8 * (count - Math.floor(count / 10) * 10)}px`,
-            }}
-          />
-        </div>
-        <div className={styles.boardCell2}>
-          <div
-            className={styles.smileCell}
-            onClick={resetButton}
-            style={{
-              backgroundPosition: `-520px`,
-            }}
-          />
-        </div>
-        <div
-          className={styles.inputBoard}
-          style={{ width: `${30 * width}px`, height: `${30 * length}` }}
-        >
-          {board.map((row, y) =>
-            row.map((color, x) => (
+
+      <div className={styles.bigMatherBoard}>
+        <div className={styles.allBoard}>
+          <div className={styles.timeSmileBoard}>
+            <div className={styles.bombCountBoard}>
+              <div className={styles.bombCell1} />
+              <div className={styles.bombCell2} />
+              <div className={styles.bombCell3} />
+            </div>
+            <div className={styles.boardCell2}>
               <div
-                className={styles.samplecell}
-                key={`${x}-${y}`}
-                onClick={() => {
-                  clickHandler(x, y);
-                }}
-                onContextMenu={(e) => handleRightClick(e, x, y)}
+                className={styles.smileCell}
+                onClick={resetButton}
                 style={{
-                  backgroundPosition: `${-30 * (bombMap[y][x] - 1)}px`,
-                  backgroundColor: color === 11 ? `ff0000` : undefined,
+                  backgroundPosition: `-530px`,
                 }}
+              />
+            </div>
+            <div className={styles.timeBoard}>
+              <div
+                className={styles.timerCell1}
+                style={{
+                  backgroundPosition: `${-22.8 * Math.floor(count / 100)}px`,
+                }}
+              />
+              <div
+                className={styles.timerCell2}
+                style={{
+                  backgroundPosition: `${-22.8 * Math.floor((count - Math.floor(count / 100) * 100) / 10)}px`,
+                }}
+              />
+              <div
+                className={styles.timerCell3}
+                style={{
+                  backgroundPosition: `${-22.8 * (count - Math.floor(count / 10) * 10)}px`,
+                }}
+              />
+            </div>
+          </div>
+          <div className={styles.borderBoard1}>
+            <div className={styles.onTheCellBoard}>
+              <div
+                className={styles.inputBoard}
+                style={{ width: `${30 * width}px`, height: `${30 * length}` }}
               >
-                <div
-                  className={styles.boardCell}
-                  style={{
-                    backgroundPosition: userInputs[y][x] === 3 ? `-30px` : undefined,
-                  }}
-                >
-                  <div
-                    className={styles.userInputsCell}
-                    style={{
-                      backgroundPosition:
-                        userInputs[y][x] === 1
-                          ? `-270px`
-                          : userInputs[y][x] === 2
-                            ? `-240px`
-                            : `30px`,
-                    }}
-                  />
-                </div>
+                {board.map((row, y) =>
+                  row.map((color, x) => (
+                    <div
+                      className={styles.samplecell}
+                      key={`${x}-${y}`}
+                      onClick={() => {
+                        clickHandler(x, y);
+                      }}
+                      onContextMenu={(e) => handleRightClick(e, x, y)}
+                      style={{
+                        backgroundPosition: `${-30 * (bombMap[y][x] - 1)}px`,
+                        backgroundColor: color === 11 ? `ff0000` : undefined,
+                      }}
+                    >
+                      <div
+                        className={styles.boardCell}
+                        style={{
+                          backgroundPosition: userInputs[y][x] === 3 ? `-30px` : undefined,
+                        }}
+                      >
+                        <div
+                          className={styles.userInputsCell}
+                          style={{
+                            backgroundPosition:
+                              userInputs[y][x] === 1
+                                ? `-270px`
+                                : userInputs[y][x] === 2
+                                  ? `-240px`
+                                  : `30px`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )),
+                )}
               </div>
-            )),
-          )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
