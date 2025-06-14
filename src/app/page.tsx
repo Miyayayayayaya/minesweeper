@@ -13,7 +13,7 @@ const directions = [
   [-1, -1],
 ];
 
-const randomBombPosition = (x: number, y: number) => {
+const randomBombPosition = (x: number, y: number, bombCount: number) => {
   const positions = new Set<string>();
   const line: [number, number][] = [];
   const getRandomBomb = (min: number, max: number): number => {
@@ -24,7 +24,7 @@ const randomBombPosition = (x: number, y: number) => {
     positions.add(`${y + dy},${x + dx}`);
   }
 
-  while (line.length < 10) {
+  while (line.length < bombCount) {
     const x_bombPosition = getRandomBomb(0, 8);
     const y_bombPosition = getRandomBomb(0, 8);
     const key = `${y_bombPosition},${x_bombPosition}`;
@@ -35,6 +35,33 @@ const randomBombPosition = (x: number, y: number) => {
     }
   }
   return line;
+};
+let length = 9;
+let length2 = 9;
+const levelSet1 = () => {
+  length = 9;
+  length2 = 9;
+  console.log(length);
+  return levelSet(length, length2);
+};
+const levelSet2 = () => {
+  length = 16;
+  length2 = 16;
+  console.log(length);
+  return levelSet(length, length2);
+};
+const levelSet3 = () => {
+  length = 30;
+  length2 = 16;
+  console.log(length);
+  return levelSet(length, length2);
+};
+const levelSet = (length: number, length2: number): number[][] => {
+  const twoDimensionalArray: number[][] = Array.from({ length: length2 }, () =>
+    Array.from({ length }, () => 0),
+  );
+  console.log(twoDimensionalArray);
+  return twoDimensionalArray;
 };
 
 const repeatOpen = (
@@ -107,27 +134,33 @@ export default function Home() {
   ]);
   //タイマー
   const [count, setCount] = useState(0);
+  const [bombCount, setBombCount] = useState(10);
+  const [custom, setCustom] = useState([[9], [9]]);
 
   const intervalRef = useRef<number | null>(null);
 
   const startTimer = () => {
-    if (intervalRef.current !== null) return;
-    intervalRef.current = window.setInterval(() => {
-      setCount((prev) => prev + 1);
-    }, 1000);
-
-    console.log('start:', intervalRef);
+    if (intervalRef.current === null) {
+      intervalRef.current = window.setInterval(() => {
+        setCount((prev) => prev + 1);
+        console.log('current', intervalRef.current);
+        console.log('count', count);
+        console.log('start:', intervalRef);
+      }, 1000);
+      return;
+    }
   };
   const stopTimer = () => {
     if (intervalRef.current === null) return;
     clearInterval(intervalRef.current);
-    intervalRef.current = null;
+
     console.log('stop:', intervalRef);
   };
 
   const resetButton = () => {
     stopTimer();
     setCount(0);
+    intervalRef.current = null;
     const newUserInputs = structuredClone(userInputs);
     const newBombMap = structuredClone(bombMap);
     const newBoard = structuredClone(board);
@@ -140,15 +173,16 @@ export default function Home() {
     setBoard(newBoard);
     return;
   };
-
+  if (bombMap.flat().filter((i) => i === 0).length !== 81) {
+    startTimer();
+  }
   //左クリック動作
   const clickHandler = (x: number, y: number) => {
     const newUserInputs = structuredClone(userInputs);
     const newBombMap = structuredClone(bombMap);
-
     if (bombMap.flat().filter((i) => i === 0).length === 81) {
       //ボムの周りの数字を生成
-      const bomb = randomBombPosition(x, y);
+      const bomb = randomBombPosition(x, y, bombCount);
       for (const [ky, kx] of bomb) {
         newBombMap[ky][kx] = 11;
       }
@@ -177,9 +211,9 @@ export default function Home() {
       newUserInputs[y][x] = 3;
       repeatOpen(x, y, newUserInputs, board);
       if (bombMap[y][x] === 11) {
+        stopTimer();
         alert('ゲームオーバー');
         console.log('aaaaaaaa');
-
         for (let ky = 0; ky < 9; ky++) {
           for (let kx = 0; kx < 9; kx++) {
             if (bombMap[ky][kx] === 11) {
@@ -189,7 +223,6 @@ export default function Home() {
         }
       }
       setUserInput(newUserInputs);
-      stopTimer();
     }
   };
 
@@ -202,7 +235,6 @@ export default function Home() {
       newUserInputs[y][x] = userInputs[y][x] % 3;
       setUserInput(newUserInputs);
     }
-
     let CorrectFrug = 0;
 
     for (let ky = 0; ky < 9; ky++) {
@@ -220,9 +252,15 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <div className={styles.levelBoard}>
-        <div className={styles.level1}>初級</div>
-        <div className={styles.level2}>中級</div>
-        <div className={styles.level3}>上級</div>
+        <div className={styles.level1} onClick={levelSet1}>
+          初級
+        </div>
+        <div className={styles.level2} onClick={levelSet2}>
+          中級
+        </div>
+        <div className={styles.level3} onClick={levelSet3}>
+          上級
+        </div>
       </div>
       <div className={styles.motherBoard}>
         <div className={styles.bombCountBoard}>
@@ -234,19 +272,19 @@ export default function Home() {
           <div
             className={styles.timerCell1}
             style={{
-              backgroundPosition: `${-23 * Math.floor(count / 100)}px`,
+              backgroundPosition: `${-22.8 * Math.floor(count / 100)}px`,
             }}
           />
           <div
             className={styles.timerCell2}
             style={{
-              backgroundPosition: `${-23 * Math.floor((count - Math.floor(count / 100) * 100) / 10)}px`,
+              backgroundPosition: `${-22.8 * Math.floor((count - Math.floor(count / 100) * 100) / 10)}px`,
             }}
           />
           <div
             className={styles.timerCell3}
             style={{
-              backgroundPosition: `${-23 * (count - Math.floor(count / 10) * 10)}px`,
+              backgroundPosition: `${-22.8 * (count - Math.floor(count / 10) * 10)}px`,
             }}
           />
         </div>
@@ -267,7 +305,6 @@ export default function Home() {
                 key={`${x}-${y}`}
                 onClick={() => {
                   clickHandler(x, y);
-                  startTimer();
                 }}
                 onContextMenu={(e) => handleRightClick(e, x, y)}
                 style={{
