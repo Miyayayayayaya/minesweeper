@@ -24,8 +24,8 @@
 }
 
 .inputBoard {
-  width: 30px;
-  height: 30px;
+  width: 270px;
+  height: 270px;
   background-color: rgb(172 176 176);
 }
 
@@ -168,12 +168,6 @@
   border-right: solid 5px #7d7d7d;
   border-bottom: solid 5px #7d7d7d;
   border-left: solid 5px #fff;
-}
-
-.onTheCellBoard {
-  width: 270px;
-  height: 270px;
-  background-color: #000;
 }
 
 .borderBoard1 {

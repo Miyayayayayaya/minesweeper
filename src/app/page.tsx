@@ -12,9 +12,14 @@ const directions = [
   [0, -1],
   [-1, -1],
 ];
-let width = 9;
-let length = 9;
-const randomBombPosition = (x: number, y: number, bombCount: number) => {
+const randomBombPosition = (
+  x: number,
+  y: number,
+  bombCount: number,
+  width: number,
+  length: number,
+  bomb: number,
+) => {
   const positions = new Set<string>();
   const line: [number, number][] = [];
   const getRandomBomb = (min: number, max: number): number => {
@@ -25,7 +30,7 @@ const randomBombPosition = (x: number, y: number, bombCount: number) => {
     positions.add(`${y + dy},${x + dx}`);
   }
 
-  while (line.length < bombCount) {
+  while (line.length < bomb) {
     const x_bombPosition = getRandomBomb(0, width - 1);
     const y_bombPosition = getRandomBomb(0, length - 1);
     const key = `${y_bombPosition},${x_bombPosition}`;
@@ -36,25 +41,6 @@ const randomBombPosition = (x: number, y: number, bombCount: number) => {
     }
   }
   return line;
-};
-
-const levelSet1 = () => {
-  width = 9;
-  length = 9;
-  // console.log(length);
-  return levelSetFunction(width, length);
-};
-const levelSet2 = () => {
-  width = 16;
-  length = 16;
-  // console.log(length);
-  return levelSetFunction(width, length);
-};
-const levelSet3 = () => {
-  width = 30;
-  length = 16;
-  // console.log(length);
-  return levelSetFunction(width, length);
 };
 const levelSetFunction = (length: number, length2: number): number[][] => {
   const twoDimensionalArray: number[][] = Array.from({ length: length2 }, () =>
@@ -76,6 +62,8 @@ const repeatOpen = (
   y: number,
   openBoard: number[][],
   bombMap: number[][],
+  width: number,
+  length: number,
   visited = new Set<string>(),
 ) => {
   const key = `${y},${x}`;
@@ -90,11 +78,17 @@ const repeatOpen = (
       openBoard[ny][nx] = 3;
     }
     if (ny >= 0 && ny < length && nx >= 0 && nx < width) {
-      repeatOpen(nx, ny, openBoard, bombMap, visited);
+      repeatOpen(nx, ny, openBoard, bombMap, width, length, visited);
     }
   }
 };
-const resetFunction = (userInputs: number[][], bombMap: number[][], board: number[][]) => {
+const resetFunction = (
+  userInputs: number[][],
+  bombMap: number[][],
+  board: number[][],
+  width: number,
+  length: number,
+) => {
   for (let y = 0; y < length; y++) {
     for (let x = 0; x < width; x++) {
       userInputs[y][x] = 0;
@@ -105,16 +99,20 @@ const resetFunction = (userInputs: number[][], bombMap: number[][], board: numbe
   return;
 };
 export default function Home() {
-  const [userInputs, setUserInput] = useState<number[][]>(levelSet1());
-  const [bombMap, setBombMap] = useState<number[][]>(levelSet1());
-  const [board, setBoard] = useState<number[][]>(levelSetFunction_setBoard(width, length));
+  const [lengthCustom, setLengthCustom] = useState(9);
+  const [widthCustom, setWidthCustom] = useState(9);
+  const [bombCount, setBombCount] = useState(10);
+  const [userInputs, setUserInput] = useState<number[][]>(
+    levelSetFunction(widthCustom, lengthCustom),
+  );
+  const [bombMap, setBombMap] = useState<number[][]>(levelSetFunction(widthCustom, lengthCustom));
+  const [board, setBoard] = useState<number[][]>(
+    levelSetFunction_setBoard(widthCustom, lengthCustom),
+  );
+  console.log('横：縦', widthCustom, lengthCustom);
   //タイマー
   const [count, setCount] = useState(0);
-  const [bombCount, setBombCount] = useState(10);
-  const [custom, setCustom] = useState([[9], [9]]);
-
   const intervalRef = useRef<number | null>(null);
-
   const startTimer = () => {
     if (intervalRef.current === null) {
       intervalRef.current = window.setInterval(() => {
@@ -127,6 +125,37 @@ export default function Home() {
     if (intervalRef.current === null) return;
     clearInterval(intervalRef.current);
   };
+  //3段階難易度
+  const levelSet1 = () => {
+    stopTimer();
+    setCount(0);
+    setLengthCustom(9);
+    setWidthCustom(9);
+    setBombCount(10);
+    setUserInput(levelSetFunction(9, 9));
+    setBombMap(levelSetFunction(9, 9));
+    setBoard(levelSetFunction_setBoard(9, 9));
+  };
+  const levelSet2 = () => {
+    stopTimer();
+    setCount(0);
+    setLengthCustom(16);
+    setWidthCustom(16);
+    setBombCount(40);
+    setUserInput(levelSetFunction(16, 16));
+    setBombMap(levelSetFunction(16, 16));
+    setBoard(levelSetFunction_setBoard(16, 16));
+  };
+  const levelSet3 = () => {
+    stopTimer();
+    setCount(0);
+    setLengthCustom(16);
+    setWidthCustom(30);
+    setBombCount(99);
+    setUserInput(levelSetFunction(30, 16));
+    setBombMap(levelSetFunction(30, 16));
+    setBoard(levelSetFunction_setBoard(30, 16));
+  };
 
   const resetButton = () => {
     stopTimer();
@@ -135,33 +164,39 @@ export default function Home() {
     const newUserInputs = structuredClone(userInputs);
     const newBombMap = structuredClone(bombMap);
     const newBoard = structuredClone(board);
-    resetFunction(newUserInputs, newBombMap, newBoard);
+    resetFunction(newUserInputs, newBombMap, newBoard, widthCustom, lengthCustom);
     setUserInput(newUserInputs);
     setBombMap(newBombMap);
     setBoard(newBoard);
     return;
   };
-  if (bombMap.flat().filter((i) => i === 0).length !== width * length) {
+  if (bombMap.flat().filter((i) => i === 0).length !== widthCustom * lengthCustom) {
     startTimer();
   }
   //左クリック動作
   const clickHandler = (x: number, y: number) => {
     const newUserInputs = structuredClone(userInputs);
     const newBombMap = structuredClone(bombMap);
-    if (bombMap.flat().filter((i) => i === 0).length === width * length) {
+    if (bombMap.flat().filter((i) => i === 0).length === widthCustom * lengthCustom) {
       //ボムの周りの数字を生成
-      const bomb = randomBombPosition(x, y, bombCount);
+      const bomb = randomBombPosition(x, y, bombCount, widthCustom, lengthCustom, bombCount);
       for (const [ky, kx] of bomb) {
         newBombMap[ky][kx] = 11;
       }
-      for (let y = 0; y < length; y++) {
-        for (let x = 0; x < width; x++) {
+      for (let y = 0; y < lengthCustom; y++) {
+        for (let x = 0; x < widthCustom; x++) {
           if (newBombMap[y][x] === 0) {
             let bombCheck = 0;
             for (const [dy, dx] of directions) {
               const ny = y + dy;
               const nx = x + dx;
-              if (ny >= 0 && ny < length && nx >= 0 && nx < width && newBombMap[ny][nx] === 11) {
+              if (
+                ny >= 0 &&
+                ny < lengthCustom &&
+                nx >= 0 &&
+                nx < widthCustom &&
+                newBombMap[ny][nx] === 11
+              ) {
                 bombCheck++;
               }
             }
@@ -169,7 +204,7 @@ export default function Home() {
           }
         }
       }
-      repeatOpen(x, y, newUserInputs, newBombMap);
+      repeatOpen(x, y, newUserInputs, newBombMap, widthCustom, lengthCustom);
 
       setUserInput(newUserInputs);
       setBombMap(newBombMap);
@@ -177,12 +212,12 @@ export default function Home() {
     }
     if (userInputs[y][x] !== 1) {
       newUserInputs[y][x] = 3;
-      repeatOpen(x, y, newUserInputs, board);
+      repeatOpen(x, y, newUserInputs, board, widthCustom, lengthCustom);
       if (bombMap[y][x] === 11) {
         stopTimer();
         alert('ゲームオーバー');
-        for (let ky = 0; ky < length; ky++) {
-          for (let kx = 0; kx < width; kx++) {
+        for (let ky = 0; ky < lengthCustom; ky++) {
+          for (let kx = 0; kx < widthCustom; kx++) {
             if (bombMap[ky][kx] === 11) {
               newUserInputs[ky][kx] = 3;
             }
@@ -204,11 +239,11 @@ export default function Home() {
     }
     let CorrectFrug = 0;
 
-    for (let ky = 0; ky < length; ky++) {
-      for (let kx = 0; kx < width; kx++) {
+    for (let ky = 0; ky < lengthCustom; ky++) {
+      for (let kx = 0; kx < widthCustom; kx++) {
         if (bombMap[ky][kx] === 11 && userInputs[ky][kx] === 1) {
           CorrectFrug++;
-          if (CorrectFrug === 10) {
+          if (CorrectFrug === bombCount) {
             alert('ゲームクリア');
           }
         }
@@ -227,16 +262,16 @@ export default function Home() {
           const l = Number((form.elements.namedItem('length') as HTMLInputElement).value);
           const b = Number((form.elements.namedItem('bomb') as HTMLInputElement).value);
           if (w > 0 && l > 0 && b > 0 && b < w * l) {
-            width = w;
-            length = l;
+            setWidthCustom(w);
+            setLengthCustom(l);
             setBombCount(b);
-            setUserInput(levelSetFunction(width, length));
-            setBombMap(levelSetFunction(width, length));
-            setBoard(levelSetFunction_setBoard(width, length));
             resetButton();
-            console.log('よこ', width);
-            console.log('たて', length);
-            console.log('array', levelSetFunction(width, length));
+            setUserInput(levelSetFunction(w, l));
+            setBombMap(levelSetFunction(w, l));
+            setBoard(levelSetFunction_setBoard(w, l));
+            console.log('よこ', w);
+            console.log('たて', l);
+            console.log('array', levelSetFunction(w, l));
           } else {
             alert('正しい値を入力してください');
           }
@@ -245,11 +280,11 @@ export default function Home() {
         <span>
           <label>
             幅
-            <input type="number" name="width" defaultValue={width} min={1} max={100} />
+            <input type="number" name="width" defaultValue={widthCustom} min={1} max={100} />
           </label>
           <label>
             高さ
-            <input type="number" name="length" defaultValue={length} min={1} max={100} />
+            <input type="number" name="length" defaultValue={lengthCustom} min={1} max={100} />
           </label>
           <label>
             爆弾数
@@ -270,9 +305,15 @@ export default function Home() {
         </div>
       </div>
 
-      <div className={styles.bigMatherBoard}>
-        <div className={styles.allBoard}>
-          <div className={styles.timeSmileBoard}>
+      <div
+        className={styles.bigMatherBoard}
+        style={{ width: `${35 * widthCustom}px`, height: `${45 * lengthCustom}` }}
+      >
+        <div
+          className={styles.allBoard}
+          style={{ width: `${10 + 30 * widthCustom}px`, height: `${90 + 30 * lengthCustom}` }}
+        >
+          <div className={styles.timeSmileBoard} style={{ width: `${10 + 30 * widthCustom}px` }}>
             <div className={styles.bombCountBoard}>
               <div className={styles.bombCell1} />
               <div className={styles.bombCell2} />
@@ -308,48 +349,49 @@ export default function Home() {
               />
             </div>
           </div>
-          <div className={styles.borderBoard1}>
-            <div className={styles.onTheCellBoard}>
-              <div
-                className={styles.inputBoard}
-                style={{ width: `${30 * width}px`, height: `${30 * length}` }}
-              >
-                {board.map((row, y) =>
-                  row.map((color, x) => (
+          <div
+            className={styles.borderBoard1}
+            style={{ width: `${10 + 30 * widthCustom}px`, height: `${10 + 30 * lengthCustom}` }}
+          >
+            <div
+              className={styles.inputBoard}
+              style={{ width: `${30 * widthCustom}px`, height: `${30 * lengthCustom}` }}
+            >
+              {board.map((row, y) =>
+                row.map((color, x) => (
+                  <div
+                    className={styles.samplecell}
+                    key={`${x}-${y}`}
+                    onClick={() => {
+                      clickHandler(x, y);
+                    }}
+                    onContextMenu={(e) => handleRightClick(e, x, y)}
+                    style={{
+                      backgroundPosition: `${-30 * (bombMap[y][x] - 1)}px`,
+                      backgroundColor: color === 11 ? `ff0000` : undefined,
+                    }}
+                  >
                     <div
-                      className={styles.samplecell}
-                      key={`${x}-${y}`}
-                      onClick={() => {
-                        clickHandler(x, y);
-                      }}
-                      onContextMenu={(e) => handleRightClick(e, x, y)}
+                      className={styles.boardCell}
                       style={{
-                        backgroundPosition: `${-30 * (bombMap[y][x] - 1)}px`,
-                        backgroundColor: color === 11 ? `ff0000` : undefined,
+                        backgroundPosition: userInputs[y][x] === 3 ? `-30px` : undefined,
                       }}
                     >
                       <div
-                        className={styles.boardCell}
+                        className={styles.userInputsCell}
                         style={{
-                          backgroundPosition: userInputs[y][x] === 3 ? `-30px` : undefined,
+                          backgroundPosition:
+                            userInputs[y][x] === 1
+                              ? `-270px`
+                              : userInputs[y][x] === 2
+                                ? `-240px`
+                                : `30px`,
                         }}
-                      >
-                        <div
-                          className={styles.userInputsCell}
-                          style={{
-                            backgroundPosition:
-                              userInputs[y][x] === 1
-                                ? `-270px`
-                                : userInputs[y][x] === 2
-                                  ? `-240px`
-                                  : `30px`,
-                          }}
-                        />
-                      </div>
+                      />
                     </div>
-                  )),
-                )}
-              </div>
+                  </div>
+                )),
+              )}
             </div>
           </div>
         </div>
