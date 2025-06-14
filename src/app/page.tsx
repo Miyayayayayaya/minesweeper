@@ -12,7 +12,8 @@ const directions = [
   [0, -1],
   [-1, -1],
 ];
-
+let width = 9;
+let length = 9;
 const randomBombPosition = (x: number, y: number, bombCount: number) => {
   const positions = new Set<string>();
   const line: [number, number][] = [];
@@ -25,8 +26,8 @@ const randomBombPosition = (x: number, y: number, bombCount: number) => {
   }
 
   while (line.length < bombCount) {
-    const x_bombPosition = getRandomBomb(0, 8);
-    const y_bombPosition = getRandomBomb(0, 8);
+    const x_bombPosition = getRandomBomb(0, width - 1);
+    const y_bombPosition = getRandomBomb(0, length - 1);
     const key = `${y_bombPosition},${x_bombPosition}`;
 
     if (!positions.has(key)) {
@@ -36,32 +37,38 @@ const randomBombPosition = (x: number, y: number, bombCount: number) => {
   }
   return line;
 };
-let length = 9;
-let length2 = 9;
+
 const levelSet1 = () => {
+  width = 9;
   length = 9;
-  length2 = 9;
-  console.log(length);
-  return levelSet(length, length2);
+  // console.log(length);
+  return levelSetFunction(width, length);
 };
 const levelSet2 = () => {
+  width = 16;
   length = 16;
-  length2 = 16;
-  console.log(length);
-  return levelSet(length, length2);
+  // console.log(length);
+  return levelSetFunction(width, length);
 };
 const levelSet3 = () => {
-  length = 30;
-  length2 = 16;
-  console.log(length);
-  return levelSet(length, length2);
+  width = 30;
+  length = 16;
+  // console.log(length);
+  return levelSetFunction(width, length);
 };
-const levelSet = (length: number, length2: number): number[][] => {
+const levelSetFunction = (length: number, length2: number): number[][] => {
   const twoDimensionalArray: number[][] = Array.from({ length: length2 }, () =>
     Array.from({ length }, () => 0),
   );
-  console.log(twoDimensionalArray);
+  // console.log(twoDimensionalArray);
   return twoDimensionalArray;
+};
+const levelSetFunction_setBoard = (length: number, length2: number): number[][] => {
+  const twoDimensionalArray_setBoard: number[][] = Array.from({ length: length2 }, () =>
+    Array.from({ length }, () => 1),
+  );
+  // console.log(twoDimensionalArray_setBoard);
+  return twoDimensionalArray_setBoard;
 };
 
 const repeatOpen = (
@@ -79,17 +86,17 @@ const repeatOpen = (
   for (const [dy, dx] of directions) {
     const ny = y + dy;
     const nx = x + dx;
-    if (ny >= 0 && ny < 9 && nx >= 0 && nx < 9) {
+    if (ny >= 0 && ny < length && nx >= 0 && nx < width) {
       openBoard[ny][nx] = 3;
     }
-    if (ny >= 0 && ny < 9 && nx >= 0 && nx < 9) {
+    if (ny >= 0 && ny < length && nx >= 0 && nx < width) {
       repeatOpen(nx, ny, openBoard, bombMap, visited);
     }
   }
 };
 const resetFunction = (userInputs: number[][], bombMap: number[][], board: number[][]) => {
-  for (let y = 0; y < 9; y++) {
-    for (let x = 0; x < 9; x++) {
+  for (let y = 0; y < length; y++) {
+    for (let x = 0; x < width; x++) {
       userInputs[y][x] = 0;
       bombMap[y][x] = 0;
       board[y][x] = 1;
@@ -97,41 +104,10 @@ const resetFunction = (userInputs: number[][], bombMap: number[][], board: numbe
   }
   return;
 };
-
 export default function Home() {
-  const [userInputs, setUserInput] = useState([
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ]);
-  const [bombMap, setBombMap] = useState([
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ]);
-  const [board, setBoard] = useState([
-    [1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1],
-  ]);
+  const [userInputs, setUserInput] = useState<number[][]>(levelSet2());
+  const [bombMap, setBombMap] = useState<number[][]>(levelSet2());
+  const [board, setBoard] = useState<number[][]>(levelSetFunction_setBoard(width, length));
   //タイマー
   const [count, setCount] = useState(0);
   const [bombCount, setBombCount] = useState(10);
@@ -143,9 +119,6 @@ export default function Home() {
     if (intervalRef.current === null) {
       intervalRef.current = window.setInterval(() => {
         setCount((prev) => prev + 1);
-        console.log('current', intervalRef.current);
-        console.log('count', count);
-        console.log('start:', intervalRef);
       }, 1000);
       return;
     }
@@ -153,8 +126,6 @@ export default function Home() {
   const stopTimer = () => {
     if (intervalRef.current === null) return;
     clearInterval(intervalRef.current);
-
-    console.log('stop:', intervalRef);
   };
 
   const resetButton = () => {
@@ -165,35 +136,32 @@ export default function Home() {
     const newBombMap = structuredClone(bombMap);
     const newBoard = structuredClone(board);
     resetFunction(newUserInputs, newBombMap, newBoard);
-    console.log('ユーザーインプット', userInputs);
-    console.log('ボムマップ', bombMap);
-    console.log('board', board);
     setUserInput(newUserInputs);
     setBombMap(newBombMap);
     setBoard(newBoard);
     return;
   };
-  if (bombMap.flat().filter((i) => i === 0).length !== 81) {
+  if (bombMap.flat().filter((i) => i === 0).length !== width * length) {
     startTimer();
   }
   //左クリック動作
   const clickHandler = (x: number, y: number) => {
     const newUserInputs = structuredClone(userInputs);
     const newBombMap = structuredClone(bombMap);
-    if (bombMap.flat().filter((i) => i === 0).length === 81) {
+    if (bombMap.flat().filter((i) => i === 0).length === width * length) {
       //ボムの周りの数字を生成
       const bomb = randomBombPosition(x, y, bombCount);
       for (const [ky, kx] of bomb) {
         newBombMap[ky][kx] = 11;
       }
-      for (let y = 0; y < 9; y++) {
-        for (let x = 0; x < 9; x++) {
+      for (let y = 0; y < length; y++) {
+        for (let x = 0; x < width; x++) {
           if (newBombMap[y][x] === 0) {
             let bombCheck = 0;
             for (const [dy, dx] of directions) {
               const ny = y + dy;
               const nx = x + dx;
-              if (ny >= 0 && ny < 9 && nx >= 0 && nx < 9 && newBombMap[ny][nx] === 11) {
+              if (ny >= 0 && ny < length && nx >= 0 && nx < width && newBombMap[ny][nx] === 11) {
                 bombCheck++;
               }
             }
@@ -213,9 +181,8 @@ export default function Home() {
       if (bombMap[y][x] === 11) {
         stopTimer();
         alert('ゲームオーバー');
-        console.log('aaaaaaaa');
-        for (let ky = 0; ky < 9; ky++) {
-          for (let kx = 0; kx < 9; kx++) {
+        for (let ky = 0; ky < length; ky++) {
+          for (let kx = 0; kx < width; kx++) {
             if (bombMap[ky][kx] === 11) {
               newUserInputs[ky][kx] = 3;
             }
@@ -237,8 +204,8 @@ export default function Home() {
     }
     let CorrectFrug = 0;
 
-    for (let ky = 0; ky < 9; ky++) {
-      for (let kx = 0; kx < 9; kx++) {
+    for (let ky = 0; ky < length; ky++) {
+      for (let kx = 0; kx < width; kx++) {
         if (bombMap[ky][kx] === 11 && userInputs[ky][kx] === 1) {
           CorrectFrug++;
           if (CorrectFrug === 10) {
@@ -251,6 +218,46 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
+      <form
+        style={{ marginBottom: `20px` }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          const form = e.target as HTMLFormElement;
+          const w = Number((form.elements.namedItem('width') as HTMLInputElement).value);
+          const l = Number((form.elements.namedItem('length') as HTMLInputElement).value);
+          const b = Number((form.elements.namedItem('bomb') as HTMLInputElement).value);
+          if (w > 0 && l > 0 && b > 0 && b < w * l) {
+            width = w;
+            length = l;
+            setBombCount(b);
+            setUserInput(levelSetFunction(width, length));
+            setBombMap(levelSetFunction(width, length));
+            setBoard(levelSetFunction_setBoard(width, length));
+            resetButton();
+            console.log('よこ', width);
+            console.log('たて', length);
+            console.log('array', levelSetFunction(width, length));
+          } else {
+            alert('正しい値を入力してください');
+          }
+        }}
+      >
+        <span>
+          <label>
+            幅
+            <input type="number" name="width" defaultValue={width} min={1} max={100} />
+          </label>
+          <label>
+            高さ
+            <input type="number" name="length" defaultValue={length} min={1} max={100} />
+          </label>
+          <label>
+            爆弾数
+            <input type="number" name="bomb" defaultValue={bombCount} min={1} max={10000} />
+          </label>
+          <button type="submit">更新</button>
+        </span>
+      </form>
       <div className={styles.levelBoard}>
         <div className={styles.level1} onClick={levelSet1}>
           初級
@@ -297,7 +304,10 @@ export default function Home() {
             }}
           />
         </div>
-        <div className={styles.inputBoard}>
+        <div
+          className={styles.inputBoard}
+          style={{ width: `${30 * width}px`, height: `${30 * length}` }}
+        >
           {board.map((row, y) =>
             row.map((color, x) => (
               <div
