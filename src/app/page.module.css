@@ -39,7 +39,12 @@
   float: left;
   width: 30px;
   height: 30px;
-  background: url('~/src/assets/images/minesweeperCell.png') no-repeat;
+  background-color: #c6c6c6;
+  background-size: cover;
+  border-top: solid 5px #fff;
+  border-right: solid 5px #808080;
+  border-bottom: solid 5px #808080;
+  border-left: solid 5px #fff;
 }
 
 .userInputsCell {
@@ -49,19 +54,17 @@
   background: url('~/src/assets/images/image.png') no-repeat;
 }
 
-.motherBoard {
-  width: 300px;
-  height: 500px;
-  padding-top: 95px;
-  padding-left: 16px;
-  background: url('~/src/assets/images/MotherBoard.png') no-repeat;
-}
-
 .boardCell2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 47px;
   height: 47.5px;
-  background: url('~/src/assets/images/minesweeperCell.png') no-repeat;
-  background-size: cover;
+  background-color: #c6c6c6;
+  border-top: solid 5px #fff;
+  border-right: solid 5px #808080;
+  border-bottom: solid 5px #808080;
+  border-left: solid 5px #fff;
 }
 
 .smileCell {
@@ -83,21 +86,27 @@
 }
 
 .level1 {
-  width: 84px;
-  height: 47.5px;
+  width: 35px;
+  height: 30px;
   background-color: #929292;
 }
 
 .level2 {
-  width: 84px;
-  height: 47.5px;
+  width: 35px;
+  height: 30px;
   background-color: #929292;
 }
 
 .level3 {
-  width: 84px;
-  height: 47.5px;
+  width: 35px;
+  height: 30px;
   background-color: #929292;
+}
+
+.level4 {
+  width: 35px;
+  height: 30px;
+  background-color: #5e8bec;
 }
 
 .levelBoard {
@@ -107,7 +116,6 @@
   justify-content: space-around;
   width: 300px;
   height: 47.5px;
-  margin-bottom: 20px;
 }
 
 .timerCell1 {

@@ -46,14 +46,12 @@ const levelSetFunction = (length: number, length2: number): number[][] => {
   const twoDimensionalArray: number[][] = Array.from({ length: length2 }, () =>
     Array.from({ length }, () => 0),
   );
-  // console.log(twoDimensionalArray);
   return twoDimensionalArray;
 };
 const levelSetFunction_setBoard = (length: number, length2: number): number[][] => {
   const twoDimensionalArray_setBoard: number[][] = Array.from({ length: length2 }, () =>
     Array.from({ length }, () => 1),
   );
-  // console.log(twoDimensionalArray_setBoard);
   return twoDimensionalArray_setBoard;
 };
 
@@ -109,7 +107,7 @@ export default function Home() {
   const [board, setBoard] = useState<number[][]>(
     levelSetFunction_setBoard(widthCustom, lengthCustom),
   );
-  console.log('横：縦', widthCustom, lengthCustom);
+  let gameState = true;
   //タイマー
   const [count, setCount] = useState(0);
   const intervalRef = useRef<number | null>(null);
@@ -127,8 +125,7 @@ export default function Home() {
   };
   //3段階難易度
   const levelSet1 = () => {
-    stopTimer();
-    setCount(0);
+    resetButton();
     setLengthCustom(9);
     setWidthCustom(9);
     setBombCount(10);
@@ -137,8 +134,7 @@ export default function Home() {
     setBoard(levelSetFunction_setBoard(9, 9));
   };
   const levelSet2 = () => {
-    stopTimer();
-    setCount(0);
+    resetButton();
     setLengthCustom(16);
     setWidthCustom(16);
     setBombCount(40);
@@ -147,8 +143,7 @@ export default function Home() {
     setBoard(levelSetFunction_setBoard(16, 16));
   };
   const levelSet3 = () => {
-    stopTimer();
-    setCount(0);
+    resetButton();
     setLengthCustom(16);
     setWidthCustom(30);
     setBombCount(99);
@@ -215,6 +210,7 @@ export default function Home() {
       repeatOpen(x, y, newUserInputs, board, widthCustom, lengthCustom);
       if (bombMap[y][x] === 11) {
         stopTimer();
+        gameState = false;
         alert('ゲームオーバー');
         for (let ky = 0; ky < lengthCustom; ky++) {
           for (let kx = 0; kx < widthCustom; kx++) {
@@ -226,7 +222,24 @@ export default function Home() {
       }
       setUserInput(newUserInputs);
     }
+    let check = 0;
+    for (let ky = 0; ky < lengthCustom; ky++) {
+      for (let kx = 0; kx < widthCustom; kx++) {
+        if (userInputs[ky][kx] === 3) {
+          check++;
+        }
+      }
+    }
+    console.log(check);
+    console.log(lengthCustom);
+    console.log(widthCustom);
+    console.log(bombCount);
+    if (check === lengthCustom * widthCustom - bombCount - 1) {
+      stopTimer();
+      alert('ゲームクリア');
+    }
   };
+  const frugCount = userInputs.flat().filter((i) => i === 1).length;
 
   //右クリック動作
   const handleRightClick = (e: React.MouseEvent, x: number, y: number) => {
@@ -236,18 +249,6 @@ export default function Home() {
       userInputs[y][x]++;
       newUserInputs[y][x] = userInputs[y][x] % 3;
       setUserInput(newUserInputs);
-    }
-    let CorrectFrug = 0;
-
-    for (let ky = 0; ky < lengthCustom; ky++) {
-      for (let kx = 0; kx < widthCustom; kx++) {
-        if (bombMap[ky][kx] === 11 && userInputs[ky][kx] === 1) {
-          CorrectFrug++;
-          if (CorrectFrug === bombCount) {
-            alert('ゲームクリア');
-          }
-        }
-      }
     }
   };
 
@@ -269,9 +270,6 @@ export default function Home() {
             setUserInput(levelSetFunction(w, l));
             setBombMap(levelSetFunction(w, l));
             setBoard(levelSetFunction_setBoard(w, l));
-            console.log('よこ', w);
-            console.log('たて', l);
-            console.log('array', levelSetFunction(w, l));
           } else {
             alert('正しい値を入力してください');
           }
@@ -294,37 +292,73 @@ export default function Home() {
         </span>
       </form>
       <div className={styles.levelBoard}>
-        <div className={styles.level1} onClick={levelSet1}>
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            levelSet1();
+          }}
+          style={{ color: ` #5e8bec` }}
+        >
           初級
-        </div>
-        <div className={styles.level2} onClick={levelSet2}>
+        </a>
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            levelSet2();
+          }}
+          style={{ color: ` #5e8bec` }}
+        >
           中級
-        </div>
-        <div className={styles.level3} onClick={levelSet3}>
+        </a>
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            levelSet3();
+          }}
+          style={{ color: ` #5e8bec` }}
+        >
           上級
-        </div>
+        </a>
       </div>
 
       <div
         className={styles.bigMatherBoard}
-        style={{ width: `${35 * widthCustom}px`, height: `${45 * lengthCustom}` }}
+        style={{ width: `${40 + 30 * widthCustom}px`, height: `${120 + 30 * lengthCustom}px` }}
       >
         <div
           className={styles.allBoard}
-          style={{ width: `${10 + 30 * widthCustom}px`, height: `${90 + 30 * lengthCustom}` }}
+          style={{ width: `${10 + 30 * widthCustom}px`, height: `${90 + 30 * lengthCustom}px` }}
         >
           <div className={styles.timeSmileBoard} style={{ width: `${10 + 30 * widthCustom}px` }}>
             <div className={styles.bombCountBoard}>
-              <div className={styles.bombCell1} />
-              <div className={styles.bombCell2} />
-              <div className={styles.bombCell3} />
+              <div
+                className={styles.bombCell1}
+                style={{
+                  backgroundPosition: `${-22.8 * Math.floor((bombCount - frugCount) / 100)}px`,
+                }}
+              />
+              <div
+                className={styles.bombCell2}
+                style={{
+                  backgroundPosition: `${-22.8 * Math.floor((bombCount - frugCount - Math.floor((bombCount - frugCount) / 100) * 100) / 10)}px`,
+                }}
+              />
+              <div
+                className={styles.bombCell3}
+                style={{
+                  backgroundPosition: `${-22.8 * (bombCount - frugCount - Math.floor((bombCount - frugCount) / 10) * 10)}px`,
+                }}
+              />
             </div>
             <div className={styles.boardCell2}>
               <div
                 className={styles.smileCell}
                 onClick={resetButton}
                 style={{
-                  backgroundPosition: `-530px`,
+                  backgroundPosition: `-533px`,
                 }}
               />
             </div>
@@ -351,11 +385,11 @@ export default function Home() {
           </div>
           <div
             className={styles.borderBoard1}
-            style={{ width: `${10 + 30 * widthCustom}px`, height: `${10 + 30 * lengthCustom}` }}
+            style={{ width: `${10 + 30 * widthCustom}px`, height: `${10 + 30 * lengthCustom}px` }}
           >
             <div
               className={styles.inputBoard}
-              style={{ width: `${30 * widthCustom}px`, height: `${30 * lengthCustom}` }}
+              style={{ width: `${30 * widthCustom}px`, height: `${30 * lengthCustom}px` }}
             >
               {board.map((row, y) =>
                 row.map((color, x) => (
@@ -374,7 +408,7 @@ export default function Home() {
                     <div
                       className={styles.boardCell}
                       style={{
-                        backgroundPosition: userInputs[y][x] === 3 ? `-30px` : undefined,
+                        opacity: userInputs[y][x] === 3 ? 0 : 1,
                       }}
                     >
                       <div
