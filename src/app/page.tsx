@@ -107,7 +107,6 @@ export default function Home() {
   const [board, setBoard] = useState<number[][]>(
     levelSetFunction_setBoard(widthCustom, lengthCustom),
   );
-  let gameState = true;
   //タイマー
   const [count, setCount] = useState(0);
   const intervalRef = useRef<number | null>(null);
@@ -210,7 +209,6 @@ export default function Home() {
       repeatOpen(x, y, newUserInputs, board, widthCustom, lengthCustom);
       if (bombMap[y][x] === 11) {
         stopTimer();
-        gameState = false;
         alert('ゲームオーバー');
         for (let ky = 0; ky < lengthCustom; ky++) {
           for (let kx = 0; kx < widthCustom; kx++) {
@@ -219,6 +217,9 @@ export default function Home() {
             }
           }
         }
+        console.log(newUserInputs);
+        newUserInputs[y][x] = 4;
+        setUserInput(newUserInputs);
       }
       setUserInput(newUserInputs);
     }
@@ -230,10 +231,6 @@ export default function Home() {
         }
       }
     }
-    console.log(check);
-    console.log(lengthCustom);
-    console.log(widthCustom);
-    console.log(bombCount);
     if (check === lengthCustom * widthCustom - bombCount - 1) {
       stopTimer();
       alert('ゲームクリア');
@@ -354,13 +351,15 @@ export default function Home() {
               />
             </div>
             <div className={styles.boardCell2}>
-              <div
-                className={styles.smileCell}
-                onClick={resetButton}
-                style={{
-                  backgroundPosition: `-533px`,
-                }}
-              />
+              <div className={styles.cell2}>
+                <div
+                  className={styles.smileCell}
+                  onClick={resetButton}
+                  style={{
+                    backgroundPosition: lengthCustom < 10 ? `-513px` : `-520px`,
+                  }}
+                />
+              </div>
             </div>
             <div className={styles.timeBoard}>
               <div
@@ -402,26 +401,28 @@ export default function Home() {
                     onContextMenu={(e) => handleRightClick(e, x, y)}
                     style={{
                       backgroundPosition: `${-30 * (bombMap[y][x] - 1)}px`,
-                      backgroundColor: color === 11 ? `ff0000` : undefined,
+                      backgroundColor: userInputs[y][x] === 4 ? `#ff0000` : `#c6c6c6`,
                     }}
                   >
                     <div
                       className={styles.boardCell}
                       style={{
-                        opacity: userInputs[y][x] === 3 ? 0 : 1,
+                        opacity: userInputs[y][x] === 3 || userInputs[y][x] === 4 ? 0 : 1,
                       }}
                     >
-                      <div
-                        className={styles.userInputsCell}
-                        style={{
-                          backgroundPosition:
-                            userInputs[y][x] === 1
-                              ? `-270px`
-                              : userInputs[y][x] === 2
-                                ? `-240px`
-                                : `30px`,
-                        }}
-                      />
+                      <div className={styles.cell}>
+                        <div
+                          className={styles.userInputsCell}
+                          style={{
+                            backgroundPosition:
+                              userInputs[y][x] === 1
+                                ? `-270px`
+                                : userInputs[y][x] === 2
+                                  ? `-240px`
+                                  : `30px`,
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                 )),
