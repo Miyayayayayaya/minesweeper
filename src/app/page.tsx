@@ -96,6 +96,24 @@ const resetFunction = (
   }
   return;
 };
+type CallState = 'playGame' | 'clearGame' | 'gameOver';
+let state: CallState = 'playGame';
+const gameState = (): string => {
+  if (state === 'playGame') {
+    return `${-517}px ${0}px`;
+  }
+  if (state === 'clearGame') {
+    return `${-564}px ${0}px`;
+  } else return `${-611}px ${0}px`;
+};
+
+const gameClearPosition = () => {
+  return;
+};
+const gameOverPosition = () => {
+  return;
+};
+
 export default function Home() {
   const [lengthCustom, setLengthCustom] = useState(9);
   const [widthCustom, setWidthCustom] = useState(9);
@@ -122,8 +140,10 @@ export default function Home() {
     if (intervalRef.current === null) return;
     clearInterval(intervalRef.current);
   };
+
   //3段階難易度
   const levelSet1 = () => {
+    state = 'playGame';
     resetButton();
     setLengthCustom(9);
     setWidthCustom(9);
@@ -133,6 +153,7 @@ export default function Home() {
     setBoard(levelSetFunction_setBoard(9, 9));
   };
   const levelSet2 = () => {
+    state = 'playGame';
     resetButton();
     setLengthCustom(16);
     setWidthCustom(16);
@@ -142,6 +163,7 @@ export default function Home() {
     setBoard(levelSetFunction_setBoard(16, 16));
   };
   const levelSet3 = () => {
+    state = 'playGame';
     resetButton();
     setLengthCustom(16);
     setWidthCustom(30);
@@ -152,6 +174,7 @@ export default function Home() {
   };
 
   const resetButton = () => {
+    state = 'playGame';
     stopTimer();
     setCount(0);
     intervalRef.current = null;
@@ -164,9 +187,11 @@ export default function Home() {
     setBoard(newBoard);
     return;
   };
+
   if (bombMap.flat().filter((i) => i === 0).length !== widthCustom * lengthCustom) {
     startTimer();
   }
+
   //左クリック動作
   const clickHandler = (x: number, y: number) => {
     const newUserInputs = structuredClone(userInputs);
@@ -208,7 +233,9 @@ export default function Home() {
       newUserInputs[y][x] = 3;
       repeatOpen(x, y, newUserInputs, board, widthCustom, lengthCustom);
       if (bombMap[y][x] === 11) {
+        state = 'gameOver';
         stopTimer();
+        gameOverPosition();
         alert('ゲームオーバー');
         for (let ky = 0; ky < lengthCustom; ky++) {
           for (let kx = 0; kx < widthCustom; kx++) {
@@ -217,7 +244,6 @@ export default function Home() {
             }
           }
         }
-        console.log(newUserInputs);
         newUserInputs[y][x] = 4;
         setUserInput(newUserInputs);
       }
@@ -231,8 +257,11 @@ export default function Home() {
         }
       }
     }
+    console.log(check);
     if (check === lengthCustom * widthCustom - bombCount - 1) {
+      state = 'clearGame';
       stopTimer();
+      gameClearPosition();
       alert('ゲームクリア');
     }
   };
@@ -251,43 +280,45 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <form
-        style={{ marginBottom: `20px` }}
-        onSubmit={(e) => {
-          e.preventDefault();
-          const form = e.target as HTMLFormElement;
-          const w = Number((form.elements.namedItem('width') as HTMLInputElement).value);
-          const l = Number((form.elements.namedItem('length') as HTMLInputElement).value);
-          const b = Number((form.elements.namedItem('bomb') as HTMLInputElement).value);
-          if (w > 0 && l > 0 && b > 0 && b < w * l) {
-            setWidthCustom(w);
-            setLengthCustom(l);
-            setBombCount(b);
-            resetButton();
-            setUserInput(levelSetFunction(w, l));
-            setBombMap(levelSetFunction(w, l));
-            setBoard(levelSetFunction_setBoard(w, l));
-          } else {
-            alert('正しい値を入力してください');
-          }
-        }}
-      >
-        <span>
-          <label>
-            幅
-            <input type="number" name="width" defaultValue={widthCustom} min={1} max={100} />
-          </label>
-          <label>
-            高さ
-            <input type="number" name="length" defaultValue={lengthCustom} min={1} max={100} />
-          </label>
-          <label>
-            爆弾数
-            <input type="number" name="bomb" defaultValue={bombCount} min={1} max={10000} />
-          </label>
-          <button type="submit">更新</button>
-        </span>
-      </form>
+      <div className={styles.customBoard}>
+        <form
+          style={{ marginBottom: `20px` }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            const form = e.target as HTMLFormElement;
+            const w = Number((form.elements.namedItem('width') as HTMLInputElement).value);
+            const l = Number((form.elements.namedItem('length') as HTMLInputElement).value);
+            const b = Number((form.elements.namedItem('bomb') as HTMLInputElement).value);
+            if (w > 0 && l > 0 && b > 0 && b < w * l) {
+              setWidthCustom(w);
+              setLengthCustom(l);
+              setBombCount(b);
+              resetButton();
+              setUserInput(levelSetFunction(w, l));
+              setBombMap(levelSetFunction(w, l));
+              setBoard(levelSetFunction_setBoard(w, l));
+            } else {
+              alert('正しい値を入力してください');
+            }
+          }}
+        >
+          <span>
+            <label>
+              幅
+              <input type="number" name="width" defaultValue={widthCustom} min={1} max={100} />
+            </label>
+            <label>
+              高さ
+              <input type="number" name="length" defaultValue={lengthCustom} min={1} max={100} />
+            </label>
+            <label>
+              爆弾数
+              <input type="number" name="bomb" defaultValue={bombCount} min={1} max={10000} />
+            </label>
+            <button type="submit">更新</button>
+          </span>
+        </form>
+      </div>
       <div className={styles.levelBoard}>
         <a
           href="#"
@@ -334,19 +365,28 @@ export default function Home() {
               <div
                 className={styles.bombCell1}
                 style={{
-                  backgroundPosition: `${-22.8 * Math.floor((bombCount - frugCount) / 100)}px`,
+                  backgroundPosition:
+                    bombCount - frugCount < 0
+                      ? `0px`
+                      : `${-22.8 * Math.floor((bombCount - frugCount) / 100)}px`,
                 }}
               />
               <div
                 className={styles.bombCell2}
                 style={{
-                  backgroundPosition: `${-22.8 * Math.floor((bombCount - frugCount - Math.floor((bombCount - frugCount) / 100) * 100) / 10)}px`,
+                  backgroundPosition:
+                    bombCount - frugCount < 0
+                      ? `0px`
+                      : `${-22.8 * Math.floor((bombCount - frugCount - Math.floor((bombCount - frugCount) / 100) * 100) / 10)}px`,
                 }}
               />
               <div
                 className={styles.bombCell3}
                 style={{
-                  backgroundPosition: `${-22.8 * (bombCount - frugCount - Math.floor((bombCount - frugCount) / 10) * 10)}px`,
+                  backgroundPosition:
+                    bombCount - frugCount < 0
+                      ? `0px`
+                      : `${-22.8 * (bombCount - frugCount - Math.floor((bombCount - frugCount) / 10) * 10)}px`,
                 }}
               />
             </div>
@@ -356,7 +396,7 @@ export default function Home() {
                   className={styles.smileCell}
                   onClick={resetButton}
                   style={{
-                    backgroundPosition: lengthCustom < 10 ? `-513px` : `-520px`,
+                    backgroundPosition: gameState(),
                   }}
                 />
               </div>

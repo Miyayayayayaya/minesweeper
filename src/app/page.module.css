@@ -75,8 +75,7 @@
 .smileCell {
   width: 47px;
   height: 47px;
-  background: url('~/src/assets/images/image.png') no-repeat;
-  background-size: cover;
+  background: url('~/src/assets/images/icons.png') no-repeat;
 }
 
 .timeBoard {
@@ -214,4 +213,11 @@
 .allBoard {
   width: 280px;
   height: 360px;
+}
+
+.customBoard {
+  width: 400px;
+  height: 50px;
+  margin-left: 40px;
+  opacity: 1;
 }
