@@ -257,6 +257,8 @@ export default function Home() {
         }
       }
     }
+    console.log(check);
+    console.log(lengthCustom * widthCustom - bombCount - 1);
     if (check === lengthCustom * widthCustom - bombCount - 1) {
       state = 'clearGame';
       stopTimer();
