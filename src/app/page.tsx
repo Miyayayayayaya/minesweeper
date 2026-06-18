@@ -1,6 +1,21 @@
 'use client';
 import { useRef, useState } from 'react';
+import SuperTokens, { SuperTokensWrapper } from 'supertokens-auth-react';
+import EmailPassword from 'supertokens-auth-react/recipe/emailpassword';
+import Session, { SessionAuth } from 'supertokens-auth-react/recipe/session';
 import styles from './page.module.css';
+
+SuperTokens.init({
+  appInfo: {
+    // learn more about this on https://supertokens.com/docs/references/frontend-sdks/reference#sdk-configuration
+    appName: 'supertokens-app2',
+    apiDomain: 'http://localhost:4000',
+    websiteDomain: 'http://localhost:3000',
+    apiBasePath: '/auth',
+    websiteBasePath: '/auth',
+  },
+  recipeList: [EmailPassword.init(), Session.init()],
+});
 
 const directions = [
   [-1, 0],
@@ -113,8 +128,7 @@ const gameClearPosition = () => {
 const gameOverPosition = () => {
   return;
 };
-
-export default function Home() {
+function MinesweeperGame() {
   const [lengthCustom, setLengthCustom] = useState(9);
   const [widthCustom, setWidthCustom] = useState(9);
   const [bombCount, setBombCount] = useState(10);
@@ -473,5 +487,15 @@ export default function Home() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <SessionAuth>
+      <SuperTokensWrapper>
+        <MinesweeperGame />
+      </SuperTokensWrapper>
+    </SessionAuth>
   );
 }
