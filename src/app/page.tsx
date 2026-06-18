@@ -7,7 +7,6 @@ import styles from './page.module.css';
 
 SuperTokens.init({
   appInfo: {
-    // learn more about this on https://supertokens.com/docs/references/frontend-sdks/reference#sdk-configuration
     appName: 'supertokens-app2',
     apiDomain: 'http://localhost:4000',
     websiteDomain: 'http://localhost:3000',
