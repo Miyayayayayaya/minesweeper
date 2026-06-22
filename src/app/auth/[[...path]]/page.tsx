@@ -1,34 +1,30 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import SuperTokens from 'supertokens-auth-react';
-import EmailPassword from 'supertokens-auth-react/recipe/emailpassword';
+import { redirectToAuth } from 'supertokens-auth-react';
 import { EmailPasswordPreBuiltUI } from 'supertokens-auth-react/recipe/emailpassword/prebuiltui';
-import Session from 'supertokens-auth-react/recipe/session';
-import { canHandleRoute, getRoutingComponent } from 'supertokens-auth-react/ui';
-
-if (typeof window !== 'undefined') {
-  SuperTokens.init({
-    appInfo: {
-      appName: 'supertokens-app2',
-      apiDomain: 'http://localhost:4000',
-      websiteDomain: 'http://localhost:3000',
-      apiBasePath: '/auth',
-      websiteBasePath: '/auth',
-    },
-    recipeList: [EmailPassword.init(), Session.init()],
-  });
-}
+import SuperTokens from 'supertokens-auth-react/ui';
 
 export default function AuthPage() {
-  const [loaded, setLoaded] = useState(false);
+  // 画面がブラウザ側で完全に読み込まれた（マウントされた）か管理するステート
+  const [initialized, setInitialized] = useState(false);
+
   useEffect(() => {
-    setLoaded(true);
+    setInitialized(true);
+
+    // もしすでにログインしている場合や、変なURL（例: /auth/invalid-url）にアクセスされた場合は、
+    // 自動的に適切な画面、またはログイン画面の初期状態にリダイレクトさせる保険の処理
+    if (SuperTokens.canHandleRoute([EmailPasswordPreBuiltUI]) === false) {
+      void redirectToAuth();
+    }
   }, []);
-  if (!loaded) return null;
-  if (canHandleRoute([EmailPasswordPreBuiltUI])) {
-    return getRoutingComponent([EmailPasswordPreBuiltUI]);
+
+  // サーバーサイドレンダリング（SSR）時のチラつきやエラーを防ぐため、
+  // ブラウザ側での準備が整うまでは真っ白な画面（null）を返します
+  if (!initialized) {
+    return null;
   }
 
-  return <div>Not Found</div>;
+  // SuperTokensが用意してくれている、完成済みのログイン/新規登録の見た目（UI）をドカンと表示します
+  return SuperTokens.getRoutingComponent([EmailPasswordPreBuiltUI]);
 }
