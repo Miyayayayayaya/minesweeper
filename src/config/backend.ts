@@ -8,7 +8,7 @@ export function ensureSuperTokensInit() {
   supertokens.init({
     framework: 'custom', // ★Next.js用に指定
     supertokens: {
-      connectionURI: 'http://localhost:3000', // SuperTokensの住所
+      connectionURI: 'https://try.supertokens.com', // SuperTokensの住所
     },
     appInfo,
     recipeList: [
