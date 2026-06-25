@@ -8,20 +8,20 @@ ensureSuperTokensInit();
 
 export async function middleware(request: NextRequest) {
   // 1. withSession を使って、リクエストしてきたユーザーのセッション（ログイン状態）をチェック
-  return withSession(request, (err, session) => {
+  return withSession(request, async (err, session) => {
     if (err) {
       // 何らかの重大なエラーが起きた場合は、リクエストをそのまま次にパス（またはエラーハンドリング）
-      return NextResponse.next();
+      return await Promise.resolve(NextResponse.next());
     }
 
     // 2. もしセッションが存在しない（未ログイン）場合
     if (session === undefined) {
       // ログイン画面（/auth）へ強制リダイレクト（追い返し）する
-      return NextResponse.redirect(new URL('/auth', request.url));
+      return await Promise.resolve(NextResponse.redirect(new URL('/auth', request.url)));
     }
 
     // 3. 無事にログインしていれば、本来行きたかったページへそのまま通す
-    return NextResponse.next();
+    return await Promise.resolve(NextResponse.next());
   });
 }
 

@@ -23,7 +23,7 @@ export const TryRefreshComponent = () => {
           // 完全に有効期限が切れていたら、ログイン画面へ誘導
           void SuperTokens.redirectToAuth();
         }
-      } catch (error) {
+      } catch (_error) {
         // ネットワークエラーなど予期せぬトラブル時はエラー状態にする
         setDidError(true);
       }
