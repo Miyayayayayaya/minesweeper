@@ -8,6 +8,7 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   gitignore(),
+  { ignores: ['.next/'] },
   js.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
   {
