@@ -10,8 +10,8 @@
 
 .samplecell {
   float: left;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   background: url('~/src/assets/images/image.png') no-repeat;
   background-color: #c6c6c6;
   border: 1px solid #000;
@@ -43,8 +43,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 21px;
+  height: 21px;
   background-color: #c6c6c6;
   border-top: solid 5px #fff;
   border-right: solid 5px #808080;
