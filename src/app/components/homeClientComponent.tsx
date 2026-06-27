@@ -1,11 +1,26 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import Session, { useSessionContext } from 'supertokens-auth-react/recipe/session';
 import { MinesweeperGame } from './minesweeperGame';
 
 export const HomeClientComponent = () => {
   // 画面側でログインセッション情報を取得する
+  const router = useRouter();
   const session = useSessionContext();
+
+  // ページ遷移（リダイレクト）のような「状態の変化に応じた処理」は useEffect の中で安全に行う
+  useEffect(() => {
+    // loading が終わっていることを確実に確認する
+    if (session.loading === false) {
+      // セッションが存在しない（false）、または userId が取得できない場合は未ログインとみなす
+      if (session.doesSessionExist === false || !session.userId) {
+        console.log('フロント側で未ログインを検知。/auth へ強制移動します。');
+        router.push('/auth');
+      }
+    }
+  }, [session.loading, session, router]); // session全体の変更を確実に見張る
 
   const handleLogout = async () => {
     try {
